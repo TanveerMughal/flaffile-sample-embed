@@ -51,5 +51,13 @@ export const config: Pick<
       primary: true,
       confirm: true,
     },
+    {
+      label: "Submit to my own API",
+      operation: "contacts:submitToApi",
+      description: "Would you like to submit your workbook to other platform?",
+      mode: "foreground",
+      primary: true,
+      confirm: true,
+    },
   ],
 };

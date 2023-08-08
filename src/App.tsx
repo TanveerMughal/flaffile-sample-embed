@@ -6,8 +6,8 @@ import { listener } from "./listener";
 const spaceProps: ISpace = {
   name: "Embedded Space",
   // to test locally add your local vars here
-  publishableKey: "pk_FKfafGxzQRg2tuwpAzz7oO3xOCHapTJo",
-  environmentId: "us_env_fTVuSWQg",
+  publishableKey: "pk_sFElLEGhagwWQcqC3CbKIteQkLFApGe8",
+  environmentId: "us_env_LZB4XNFX",
   workbook: config,
   themeConfig: makeTheme({ primaryColor: "#546a76", textColor: "#fff" }),
   sidebarConfig: {
