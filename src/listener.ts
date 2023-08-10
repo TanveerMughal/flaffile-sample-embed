@@ -1,22 +1,40 @@
 import { FlatfileListener } from "@flatfile/listener";
 import api, { Flatfile } from "@flatfile/api";
+import { getData } from "./App";
 
-async function submit(jobId: string) {
+async function submit(jobId: string, workbookId: string) {
   try {
     await api.jobs.ack(jobId, {
       info: "I'm starting the job - inside client",
       progress: 33,
     });
 
-    //do your work here
-    await new Promise((res) => setTimeout(res, 2000));
+    const { data: sheets } = await api.sheets.list({ workbookId });
+
+    // console.log({ sheets });
+
+    const records: { [name: string]: any } = {};
+    for (const [index, element] of sheets.entries()) {
+      records[`Sheet[${index}]`] = await api.records.get(element.id);
+    }
+
+    const record = records["Sheet[0]"].data.records.map((record: any) => {
+      const fullName = `${record.values["first_name"].value} ${record.values["last_name"].value}`;
+      return fullName;
+    });
+
+    console.log({ record });
+
+    getData(record);
+
+    // console.log(JSON.stringify(records, null, 2));
 
     await api.jobs.complete(jobId, {
-      outcome: { message: "Job complete.", next: { type: "wait" } },
+      info: "Job Completed",
     });
   } catch (e) {
     await api.jobs.fail(jobId, {
-      outcome: { message: "Error: ${e}" },
+      outcome: { message: `Error: ${e}` },
     });
   }
 }
@@ -75,11 +93,13 @@ export const listener = FlatfileListener.create((client) => {
     // @ts-ignore
     { payload: { operation: "contacts:submit" } },
     async (event: any) => {
-      const {
-        context: { jobId },
-      } = event;
+      const { context } = event;
+      const jobId = context.jobId;
+      const workbookId = context.workbookId;
 
-      return submit(jobId);
+      // const file = await api.files.get(context.fileId);
+
+      return submit(jobId, workbookId);
     }
   );
 });

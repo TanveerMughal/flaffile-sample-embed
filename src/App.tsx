@@ -17,6 +17,12 @@ const spaceProps: ISpace = {
   listener: listener,
 };
 
+let record: any = [];
+
+export function getData(data: any) {
+  record = data;
+}
+
 export default function App() {
   const [showSpace, setShowSpace] = useState(false);
   const space = useSpace({
@@ -29,6 +35,23 @@ export default function App() {
 
   return (
     <div style={{ padding: "16px" }}>
+      <h1>Flatfile React Example</h1>
+      <p>
+        {/* display record here */}
+        {record.map((item: any, index: any) => {
+          return (
+            <div
+              key={index}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              {item}
+            </div>
+          );
+        })}
+      </p>
       <button
         onClick={() => {
           setShowSpace(!showSpace);
